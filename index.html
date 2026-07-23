@@ -1,14 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Army Test</title>
-  </head>
-  <body>
-    <h1>AI Business Process Army - LIVE! ✅</h1>
-    <p>If you see this, deployment is working!</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Business Process Army</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(to br, #dbeafe, #e0e7ff, #fce7f3); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { color: #1f2937; margin-bottom: 10px; }
+        p { color: #6b7280; margin-bottom: 30px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        button { width: 100%; padding: 12px; margin: 10px 0; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #1d4ed8; }
+        .progress { display: flex; gap: 5px; margin-bottom: 20px; }
+        .progress-bar { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; }
+        .progress-bar.active { background: #2563eb; }
+        .score-display { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .score-box { background: #f3f4f6; padding: 15px; border-radius: 8px; text-align: center; }
+        .score-box p { margin: 0; font-size: 24px; font-weight: bold; color: #2563eb; }
+        .score-box small { color: #6b7280; }
+        .cluster-box { background: #dbeafe; padding: 15px; border-left: 4px solid #2563eb; border-radius: 4px; margin: 20px 0; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
     <div id="root"></div>
-    <script type="module" src="/ai-army-assessment/src/main.jsx"></script>
-  </body>
+    
+    <script type="text/babel">
+        function App() {
+            const [step, setStep] = React.useState(0);
+            const [profile, setProfile] = React.useState(null);
+            const [data, setData] = React.useState({
+                name: '', email: '', age: '', role: '', department: '',
+                skill: 3, curiosity: 3, process: 3, adapt: 3, willing: 3, business: 3
+            });
+
+            const handleChange = (field, value) => setData({...data, [field]: value});
+
+            const generateProfile = () => {
+                const appetite = (parseInt(data.curiosity) + parseInt(data.process) + parseInt(data.willing)) / 3;
+                const readiness = (parseInt(data.skill) + parseInt(data.adapt) + parseInt(data.business)) / 3;
+                const overall = (appetite + readiness) / 2;
+                
+                let cluster, tier;
+                if (appetite >= 4.5 && readiness >= 4) { cluster = 'AI Champions'; tier = 'Tier 1'; }
+                else if (appetite >= 4 && readiness >= 3.5) { cluster = 'AI Accelerators'; tier = 'Tier 2'; }
+                else if (appetite >= 3.5 && readiness >= 2.5) { cluster = 'AI Builders'; tier = 'Tier 3'; }
+                else if (appetite >= 2.5) { cluster = 'AI Learners'; tier = 'Tier 4'; }
+                else { cluster = 'AI Explorers'; tier = 'Tier 5'; }
+
+                setProfile({...data, appetite: appetite.toFixed(2), readiness: readiness.toFixed(2), overall: overall.toFixed(2), cluster, tier});
+                setStep(3);
+            };
+
+            const Slider = ({label, field, desc}) => (
+                <div style={{marginBottom: '20px'}}>
+                    <label style={{fontWeight: 'bold', display: 'block'}}>{label}</label>
+                    <small style={{color: '#6b7280', display: 'block', marginBottom: '8px'}}>{desc}</small>
+                    <input type="range" min="1" max="5" value={data[field]} onChange={(e) => handleChange(field, e.target.value)} style={{cursor: 'pointer'}} />
+                    <div style={{textAlign: 'right', marginTop: '5px', fontSize: '18px', fontWeight: 'bold', color: '#2563eb'}}>{data[field]}</div>
+                </div>
+            );
+
+            return (
+                <div className="container">
+                    <h1>AI Business Process Army</h1>
+                    <p>Assessment & Cluster Analysis</p>
+                    
+                    <div className="progress">
+                        {[0,1,2,3].map(i => <div key={i} className={`progress-bar ${i <= step ? 'active' : ''}`}></div>)}
+                    </div>
+
+                    {step === 0 && (
+                        <div>
+                            <input type="text" placeholder="Name" value={data.name} onChange={(e) => handleChange('name', e.target.value)} />
+                            <input type="email" placeholder="Email" value={data.email} onChange={(e) => handleChange('email', e.target.value)} />
+                            <select value={data.age} onChange={(e) => handleChange('age', e.target.value)}>
+                                <option>Age Range</option>
+                                <option>18-25</option><option>26-35</option><option>36-45</option><option>46-55</option><option>55+</option>
+                            </select>
+                            <input type="text" placeholder="Role" value={data.role} onChange={(e) => handleChange('role', e.target.value)} />
+                            <input type="text" placeholder="Department" value={data.department} onChange={(e) => handleChange('department', e.target.value)} />
+                        </div>
+                    )}
+
+                    {step === 1 && (
+                        <div>
+                            <Slider label="AI Skill Level" field="skill" desc="Hands-on experience with AI tools" />
+                            <Slider label="Business Process Knowledge" field="business" desc="Understanding of existing processes" />
+                        </div>
+                    )}
+
+                    {step === 2 && (
+                        <div>
+                            <Slider label="AI Curiosity" field="curiosity" desc="Interest in learning about AI" />
+                            <Slider label="Process Improvement Mindset" field="process" desc="Drive to improve efficiency" />
+                            <Slider label="Adaptability to Change" field="adapt" desc="Comfort with new approaches" />
+                            <Slider label="Willingness to Learn" field="willing" desc="Openness to trying new tools" />
+                        </div>
+                    )}
+
+                    {step === 3 && profile && (
+                        <div>
+                            <h2 style={{fontSize: '20px', marginBottom: '15px'}}>Results for {profile.name}</h2>
+                            <div className="score-display">
+                                <div className="score-box"><p>{profile.appetite}</p><small>AI Appetite</small></div>
+                                <div className="score-box"><p>{profile.readiness}</p><small>Readiness</small></div>
+                                <div className="score-box"><p>{profile.overall}</p><small>Overall</small></div>
+                            </div>
+                            <div className="cluster-box">
+                                <strong>{profile.cluster}</strong>
+                                <p>{profile.tier}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    <div style={{display: 'flex', gap: '10px'}}>
+                        {step > 0 && <button onClick={() => setStep(step-1)} style={{flex: 1, background: '#6b7280'}}>Back</button>}
+                        {step < 3 && <button onClick={() => step === 2 ? generateProfile() : setStep(step+1)} style={{flex: 1}}>
+                            {step === 2 ? 'Generate Profile' : 'Next'}
+                        </button>}
+                        {step === 3 && <button onClick={() => {setStep(0); setProfile(null);}} style={{flex: 1, background: '#6b7280'}}>New Assessment</button>}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
 </html>
